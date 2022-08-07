@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生就业数据（可动态添加）</title>
+    <link rel="stylesheet" href="user.css">
+
+</head>
+<body>
+
+    <h1>新增学员</h1>
+    <div class="info">
+      姓名：<input type="text" class="uname">
+      年龄：<input type="text" class="age">
+      性别: <select name="gender" id="" class="gender">
+        <option value="男">男</option>
+        <option value="女">女</option>
+      </select>
+      薪资：<input type="text" class="salary">
+      就业城市：<select name="city" id="" class="city">
+        <option value="北京">北京</option>
+        <option value="上海">上海</option>
+        <option value="广州">广州</option>
+        <option value="深圳">深圳</option>
+        <option value="曹县">曹县</option>
+  
+      </select>
+      <button class="add">录入</button>
+    </div>
+  
+    <h1>就业榜</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>学号</th>
+          <th>姓名</th>
+          <th>年龄</th>
+          <th>性别</th>
+          <th>薪资</th>
+          <th>就业城市</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <!-- <td>欧阳霸天</td>
+          <td>19</td>
+          <td>男</td>
+  
+          <td>15000</td>
+          <td>上海</td>
+          <td>
+            <a href="javascript:">删除</a>
+          </td> -->
+        </tr>
+  
+      </tbody>
+    </table>
+
+    <script>
+
+
+       //original data
+      let arr = [
+      {stuID:1001,uname: '欧阳霸天', age: 19, gender: '男', salary: '20000', city: '上海' },
+      {stuID:1002,uname: '令狐霸天', age: 29, gender: '男', salary: '30000', city: '北京' },
+      {stuID:1003,uname: '诸葛霸天', age: 39, gender: '男', salary: '2000', city: '北京' },
+     ]
+
+       //获取各个表单的元素：(获得用户输入的内容)
+        let add=document.querySelector('.add')
+        let uname=document.querySelector('.uname')
+        let age=document.querySelector('.age')
+        let gender=document.querySelector('.gender')
+        let salary=document.querySelector('.salary')
+        let city=document.querySelector('.city')
+        
+        //目的：新增学生信息并且呈现在就业数据中
+
+        //渲染函数-tbody是强调作为表格主元素的部分rows
+        let tbody=document.querySelector('tbody')
+        //渲染函数
+        function render(){
+          
+            //要先干掉之前的数据,再放入新录入的数据
+            tbody.innerHTML=''
+
+            //根据数据的条数来渲染增加tr
+            for(let i=0;i<arr.length;i++){
+                //1.创建tr
+                let tr=document.createElement('tr')
+                //2.tr 放内容
+                tr.innerHTML=`
+
+                <td>${arr[i].stuID}</td>
+                <td>${arr[i].uname}</td>
+                <td>${arr[i].age}</td>
+                <td>${arr[i].gender}</td>
+                <td>${arr[i].salary}</td>
+                <td>${arr[i].city}</td>
+                <td>
+                <a href="javascript:" id="${i}">删除</a>
+                </td>
+
+                `
+                //3.把tr追加给tbody-父元素.appendChild(子元素)
+                tbody.appendChild(tr)
+
+                //在插入新数据之后，复原下拉列表中的数据为添加数据之前的情况
+                uname.value=age.value=salary.value=''
+                gender.value='男'
+                city.value='北京'
+
+            }
+        }
+
+        //页面加载即调用函数-
+        render()
+
+        //添加数据按钮：
+   
+
+        //点击‘录入’之后则新增数据
+        add.addEventListener('click',function(){
+          //alert(11)
+          //获得表单里的值之后追加给数组arr（用push方法）
+          arr.push({ 
+           //得到数组最后一条数据的学号+1变为当前的stuID,当删完所有数组之后序号默认从1001开始
+           stuID:(arr.length===0?1001:arr[arr.length-1].stuID+1),
+           uname: uname.value,//.value取值送给属性
+           age: age.value, 
+           gender: gender.value, 
+           salary: salary.value, 
+           city: city.value})
+
+           //重新渲染一下，让之前的已经加入过的数据删去再重新加入（否则会一直接到上面已经添加的值后面）
+           render()
+        })
+        // 删除操作：删除的也是数组里面的数据，用事件委托
+           tbody.addEventListener('click',function(e){
+          //必须点击“删除”链接 才执行删除操作
+          //console.dir(e.target.tagName)//输出点击的元素
+          if(e.target.tagName==='A'){
+            //要删除该“删除”链接所在行的数组 
+            //用到splice：arr.splice(从哪里开始删，删几个)
+            //a href="javascript:" id="${i} 给每个删除链接赋值
+            //得到'A'的id序号
+            console.log(e.target.id)
+            arr.splice(e.target.id,1)
+
+            //删除之后再重新渲染一遍
+            render()
+
+
+          }
+
+        })
+
+
+    </script>
+    
+</body>
+</html>
